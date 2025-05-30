@@ -23,28 +23,27 @@
 <body>
 
   <div data-key="externalId" id="mappedin-map"></div>
-
-
-  <script type="text/javascript">
+  <script type="module">
     function getHashParameter(key) {
       const hash = window.location.hash; 
       const params = new URLSearchParams(hash.split('?')[1]);
       return params.get(key);
     }
-    const venueId = getHashParameter('location');
+    const venueId = getHashParameter('location') || 'frasers-century-square';
     console.log("venueIdvenueId*****1234===>>>>>", venueId)
     window.mappedin = {
       miKey: {
         id: "6807d7f08f9849e9407b3b65",
         key: "qZSm31d6KXJ1tqOhJXzSLnh8Ha6cvuIIvYiB4LoMynpyHfaB",
       },
-      venue: venueId ? venueId : "frasers-waterway-point",
+      venue: "frasers-century-square",
       language: "en"
     };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.mappedin.com/web2/release/mappedin-web.js';
+    script.type = 'module';
+    document.body.appendChild(script);
   </script>
-
-
-  <script id="mappedin-web" type="module" src="https://cdn.mappedin.com/web2/release/mappedin-web.js"></script>
 </body>
 
 </html>
