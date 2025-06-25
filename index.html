@@ -24,34 +24,60 @@
 
   <div data-key="externalId" id="mappedin-map"></div>
   <script type="module">
-    function getHashParameter(key) {
-      const hash = window.location.hash; 
-    console.log("hash*****1234===>>>>>", hash)
+  function getUrlParam(key) {
+    const hash = window.location.hash;
+    const search = window.location.search;
 
-      const queryStart = hash.indexOf('?');
-    console.log("queryStart*****1234===>>>>>", queryStart)
+    console.log('window.location.hash:', hash);
+    console.log('window.location.search:', search);
 
-      if (queryStart === -1) return null;
-      const params = new URLSearchParams(hash.substring(queryStart + 1));
-    console.log("params*****1234===>>>>>", params)
-
-      return params.get(key);
+    // Try to get from hash (e.g., #/profile?location=...&venueId=...)
+    if (hash.includes('?')) {
+      const query = hash.split('?')[1];
+      console.log('Extracted hash query:', query);
+      const hashParams = new URLSearchParams(query);
+      if (hashParams.has(key)) {
+        console.log(`Found "${key}" in hash:`, hashParams.get(key));
+        return hashParams.get(key);
+      }
     }
-    const venueId = getHashParameter('venueId') || 'frasers-century-square';
-    console.log("venueIdvenueId*****1234===>>>>>", venueId)
-    window.mappedin = {
-      miKey: {
-        id: "66312c213dad2ee54fc62ad7",
-        key: "arDAsZWtZVppuX1Ms9KNjHOqFwQrHYstYWG6K48anzFAi02D",
-      },
-      venue: (venueId !== "" || venueId !== undefined) ? venueId :"frasers-century-square",
-      language: "en"
-    };
-    const script = document.createElement('script');
-    script.src = 'https://cdn.mappedin.com/web2/release/mappedin-web.js';
-    script.type = 'module';
-    document.body.appendChild(script);
-  </script>
+
+    // Fallback to search (e.g., ?venueId=...)
+    if (search) {
+      const query = search.substring(1); // Remove ?
+      console.log('Extracted search query:', query);
+      const searchParams = new URLSearchParams(query);
+      if (searchParams.has(key)) {
+        console.log(`Found "${key}" in search:`, searchParams.get(key));
+        return searchParams.get(key);
+      }
+    }
+
+    console.warn(`Parameter "${key}" not found in URL`);
+    return null;
+  }
+
+  const venueId = getUrlParam('venueId') || 'frasers-century-square';
+  const locationId = getUrlParam('location');
+
+  console.log('✅ Final venueId:', venueId);
+  console.log('✅ Final locationId:', locationId);
+
+  window.mappedin = {
+    miKey: {
+      id: "66312c213dad2ee54fc62ad7",
+      key: "arDAsZWtZVppuX1Ms9KNjHOqFwQrHYstYWG6K48anzFAi02D",
+    },
+    venue: venueId,
+    language: "en"
+  };
+
+  const script = document.createElement('script');
+  script.src = 'https://cdn.mappedin.com/web2/release/mappedin-web.js';
+  script.type = 'module';
+  document.body.appendChild(script);
+</script>
+
 </body>
 
 </html>
